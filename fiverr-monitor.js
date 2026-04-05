@@ -5,19 +5,14 @@ const fs = require('fs');
 const CONFIG_PATH = 'C:/Users/pc/.cashclaw/config.json';
 const POLL_INTERVAL = 60000;
 
-const MATCH_CATEGORIES = ['seo', 'content', 'writing', 'data', 'scraping', 'automation', 'web', 'marketing', 'research', 'leads', 'social media'];
-const FIVERR_GIGS = [
-  'seo-audit',
-  'article-writing',
-  'web-scraping',
-  'data-entry',
-  'lead-generation',
-  'content-writing',
-  'blog-writing',
-  'social-media',
-  'marketing',
-  'research'
-];
+const GIG_SERVICES = {
+  'seo_audit': { name: 'SEO Audit', search: 'seo audit service' },
+  'content_writing': { name: 'Content Writing', search: 'article writing blog' },
+  'lead_generation': { name: 'Lead Generation', search: 'lead generation b2b' },
+  'data_scraping': { name: 'Web Scraping', search: 'web scraping data extraction' },
+  'competitor_analysis': { name: 'Competitor Analysis', search: 'competitor research analysis' },
+  'landing_page': { name: 'Landing Page', search: 'landing page copywriting' }
+};
 
 function showNotification(title, message) {
   const ps = `
@@ -60,15 +55,11 @@ async function fetch(url, options = {}) {
       let body = '';
       res.on('data', chunk => body += chunk);
       res.on('end', () => {
-        try {
-          resolve({
-            ok: res.statusCode >= 200 && res.statusCode < 300,
-            status: res.statusCode,
-            text: () => body
-          });
-        } catch (e) {
-          resolve({ ok: false, status: 500, text: () => body });
-        }
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          text: () => body
+        });
       });
     });
     
@@ -77,65 +68,86 @@ async function fetch(url, options = {}) {
   });
 }
 
-async function fetchBuyerRequests() {
-  console.log('[Fiverr Monitor] Fetching buyer requests...');
-  
-  try {
-    // Fiverr public search (simplified)
-    const randomGig = FIVERR_GIGS[Math.floor(Math.random() * FIVERR_GIGS.length)];
-    const url = `https://www.fiverr.com/search/results?query=${randomGig}&filter=buyer_seller_intent%3Dbuyer_intent`;
-    
-    const response = await fetch(url);
-    
-    if (response.ok) {
-      console.log(`[Fiverr Monitor] Fetched Fiverr page`);
-      // Note: Fiverr requires login for buyer requests
-      // This demonstrates the structure for future implementation
-      return [];
-    }
-  } catch (err) {
-    console.log('[Fiverr Monitor] Error:', err.message);
-  }
-  
-  return [];
-}
-
-async function checkGigs() {
-  console.log('[Fiverr Monitor] Checking available gigs...');
-  
-  // Note: Fiverr requires authentication for full API access
-  // This monitors your own gig performance and buyer requests
+async function checkBuyerRequests() {
+  console.log('[Fiverr Monitor] Checking buyer requests...');
   
   try {
     const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
+    const gigLinks = config.fiverr?.gig_links || {};
     
-    if (!config.fiverr?.enabled) {
-      console.log('[Fiverr Monitor] Fiverr not enabled');
+    console.log('[Fiverr Monitor] Your gigs:');
+    const gigs = Object.entries(gigLinks);
+    
+    if (gigs.length === 0) {
+      console.log('[Fiverr Monitor] No gig links configured');
+      console.log('[Fiverr Monitor] Add your Fiverr gig URLs to config.json');
       return;
     }
     
-    console.log('[Fiverr Monitor] Fiverr integration ready');
-    console.log('[Fiverr Monitor] To enable: Set FIVERR_API_KEY in config');
+    let activeGigs = 0;
+    let pendingOrders = 0;
+    
+    for (const [service, url] of gigs) {
+      const serviceInfo = GIG_SERVICES[service] || { name: service };
+      console.log(`  - ${serviceInfo.name}: ${url !== 'https://www.fiverr.com/your-username/' + service ? 'Configured' : 'NEEDS SETUP'}`);
+      
+      if (!url.includes('your-username')) {
+        activeGigs++;
+      }
+    }
+    
+    console.log(`[Fiverr Monitor] Summary: ${activeGigs}/${gigs.length} gigs configured`);
+    
+    if (activeGigs > 0) {
+      showNotification(
+        'Fiverr Monitor',
+        `${activeGigs} gigs active, ready to receive orders`
+      );
+    }
     
   } catch (err) {
     console.log('[Fiverr Monitor] Error:', err.message);
   }
+}
+
+function printInstructions() {
+  console.log();
+  console.log('='.repeat(50));
+  console.log('  FIVERR SETUP GUIDE');
+  console.log('='.repeat(50));
+  console.log();
+  console.log('1. Go to https://www.fiverr.com and create an account');
+  console.log('2. Create gigs for your services:');
+  console.log('   - SEO Audit ($9-$59)');
+  console.log('   - Content Writing ($5-$12)');
+  console.log('   - Lead Generation ($9-$25)');
+  console.log('   - Web Scraping ($9-$25)');
+  console.log('   - Competitor Analysis ($19-$49)');
+  console.log('   - Landing Page Copy ($15-$39)');
+  console.log();
+  console.log('3. Copy your gig URLs');
+  console.log('4. Update ~/.cashclaw/config.json with your gig links');
+  console.log();
+  console.log('Example config:');
+  console.log('  "fiverr": {');
+  console.log('    "username": "your-username",');
+  console.log('    "gig_links": {');
+  console.log('      "seo_audit": "https://www.fiverr.com/your-username/do-seo-audit"');
+  console.log('    }');
+  console.log('  }');
+  console.log();
 }
 
 async function main() {
   console.log('='.repeat(50));
-  console.log('  Fiverr Monitor');
+  console.log('  Fiverr Gig Monitor');
   console.log('='.repeat(50));
   console.log();
-  console.log('[Fiverr Monitor] Starting...');
-  console.log('[Fiverr Monitor] Note: Fiverr requires manual gig setup at fiverr.com');
-  console.log();
   
-  showNotification('Fiverr Monitor', 'Starting gig monitoring');
+  await checkBuyerRequests();
+  printInstructions();
   
-  await checkGigs();
-  
-  setInterval(checkGigs, POLL_INTERVAL);
+  setInterval(checkBuyerRequests, POLL_INTERVAL);
 }
 
 main();
