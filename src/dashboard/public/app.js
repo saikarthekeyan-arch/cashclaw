@@ -621,6 +621,12 @@ async function loadToku() {
       const wonCount = (bidHistory.wonJobs || []).length;
       html += '<div class="toku-stat"><span class="label">Won:</span> <span class="value">' + wonCount + '</span></div>';
       
+      // Deliveries
+      const deliveries = data.deliveries || {};
+      const pendingDeliveries = (deliveries.pending || []).filter(d => !d.deliveredAt).length;
+      const completedDeliveries = (deliveries.completed || []).length + (deliveries.pending || []).filter(d => d.deliveredAt).length;
+      html += '<div class="toku-stat"><span class="label">Working:</span> <span class="value">' + pendingDeliveries + '</span></div>';
+      
       html += '</div>';
       
       // Services
@@ -633,10 +639,24 @@ async function loadToku() {
         html += '</ul></div>';
       }
       
+      // Show won jobs first
+      if (bidHistory.wonJobs && bidHistory.wonJobs.length > 0) {
+        html += '<div class="toku-won"><strong>Won Jobs (Auto-Completing):</strong><ul class="won-list">';
+        bidHistory.wonJobs.slice(0, 5).forEach(won => {
+          const amount = won.amount ? '$' + (won.amount / 100).toFixed(2) : '-';
+          html += '<li class="won-item">';
+          html += '<span class="won-title">' + (won.title || 'Job').substring(0, 40) + '</span>';
+          html += '<span class="won-amount">' + amount + '</span>';
+          html += '<span class="bid-status status-won">WON</span>';
+          html += '</li>';
+        });
+        html += '</ul></div>';
+      }
+      
       // Show bid history
       if (bidHistory.bids && Object.keys(bidHistory.bids).length > 0) {
         html += '<div class="toku-bids"><strong>Your Bids:</strong><ul class="bid-list">';
-        const bids = Object.values(bidHistory.bids);
+        const bids = Object.values(bidHistory.bids).filter(b => b.status !== 'already_bid');
         bids.slice(0, 10).forEach(bid => {
           const amount = bid.amount ? '$' + (bid.amount / 100).toFixed(2) : '-';
           const statusClass = bid.status === 'pending' ? 'status-pending' : (bid.status === 'won' ? 'status-won' : 'status-other');
@@ -644,6 +664,22 @@ async function loadToku() {
           html += '<span class="bid-title">' + (bid.title || 'Job').substring(0, 40) + '</span>';
           html += '<span class="bid-amount">' + amount + '</span>';
           html += '<span class="bid-status ' + statusClass + '">' + (bid.status || 'unknown') + '</span>';
+          html += '</li>';
+        });
+        html += '</ul></div>';
+      }
+      
+      // Show pending deliveries
+      if (deliveries.pending && deliveries.pending.length > 0) {
+        html += '<div class="toku-deliveries"><strong>Deliveries in Progress:</strong><ul class="delivery-list">';
+        deliveries.pending.slice(0, 5).forEach(del => {
+          const amount = del.amount ? '$' + (del.amount / 100).toFixed(2) : '-';
+          const statusText = del.deliveredAt ? 'DELIVERED' : 'WORKING';
+          const statusClass = del.deliveredAt ? 'status-won' : 'status-pending';
+          html += '<li class="delivery-item">';
+          html += '<span class="delivery-title">' + (del.title || 'Job').substring(0, 35) + '</span>';
+          html += '<span class="delivery-amount">' + amount + '</span>';
+          html += '<span class="bid-status ' + statusClass + '">' + statusText + '</span>';
           html += '</li>';
         });
         html += '</ul></div>';

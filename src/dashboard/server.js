@@ -7,7 +7,7 @@ import { listMissions, getMissionStats, getMissionTrail } from '../engine/missio
 import { getTotal, getMonthly, getWeekly, getToday, getHistory, getByService, getDailyTotals } from '../engine/earnings-tracker.js';
 import { listInstalledSkills, listAvailableSkills } from '../integrations/openclaw-bridge.js';
 import { listAvailableJobs, getAgentProfile, listOrders, registerAgent, syncStatus, acceptJob, deliverJob, getWallet, acceptProposal, rejectProposal, sendMessage, getMessages, requestWithdraw, claimAgent, getJobDetail } from '../integrations/hyrve-bridge.js';
-import { getTokuProfile, getTokuJobs, getTokuBids, getTokuWallet, getTokuServices, getTokuStatus, getBidHistory } from '../integrations/toku-bridge.js';
+import { getTokuProfile, getTokuJobs, getTokuBids, getTokuWallet, getTokuServices, getTokuStatus, getBidHistory, getDeliveries } from '../integrations/toku-bridge.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -464,6 +464,7 @@ export function createDashboardServer() {
         wallet: walletResult.status === 'fulfilled' ? walletResult.value.wallet : null,
         services: servicesResult.status === 'fulfilled' ? servicesResult.value.services : [],
         bid_history: getBidHistory(),
+        deliveries: getDeliveries(),
       });
     } catch (err) {
       res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: err.message } });

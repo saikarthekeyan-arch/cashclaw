@@ -152,3 +152,13 @@ export function getBidHistory() {
   } catch (e) {}
   return { bids: {}, wonJobs: [] };
 }
+
+export function getDeliveries() {
+  const DELIVERIES_PATH = 'C:/Users/pc/.cashclaw/toku-deliveries.json';
+  try {
+    if (fs.existsSync(DELIVERIES_PATH)) {
+      return JSON.parse(fs.readFileSync(DELIVERIES_PATH, 'utf-8'));
+    }
+  } catch (e) {}
+  return { completed: [], pending: [] };
+}

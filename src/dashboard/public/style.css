@@ -1128,3 +1128,80 @@ code, pre, .monospace {
   background: var(--text-muted);
   color: #fff;
 }
+
+.toku-won {
+  margin-top: 16px;
+}
+
+.toku-won ul {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.won-list {
+  background: rgba(22, 199, 132, 0.1);
+  border: 1px solid var(--green);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+
+.won-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.won-title {
+  flex: 1;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.won-amount {
+  color: var(--green);
+  font-weight: 600;
+  margin: 0 10px;
+}
+
+.toku-deliveries {
+  margin-top: 16px;
+}
+
+.toku-deliveries ul {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.delivery-list {
+  background: rgba(243, 156, 18, 0.1);
+  border: 1px solid var(--yellow);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+
+.delivery-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.delivery-title {
+  flex: 1;
+  color: var(--yellow);
+}
+
+.delivery-amount {
+  color: var(--green);
+  font-weight: 600;
+  margin: 0 10px;
+}

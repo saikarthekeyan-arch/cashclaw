@@ -26,6 +26,9 @@ start "CashClaw Notifier" cmd /k "node job-notifier.js"
 REM Start Toku Agency smart auto-bidder
 start "Toku SmartBid" cmd /k "node toku-smart-bidder.js"
 
+REM Start Toku auto-complete worker
+start "Toku Worker" cmd /k "node toku-worker.js"
+
 REM Wait for server to start
 timeout /t 3 /nobreak > nul
 
@@ -37,6 +40,7 @@ echo  All services running!
 echo  - Dashboard: http://localhost:3847
 echo  - HYRVE: Monitoring + Auto-accept
 echo  - Toku: Auto-bidding on jobs
+echo  - Toku: Auto-completing won jobs
 echo  - Windows notifications enabled
 echo.
 echo  Press any key to exit...
