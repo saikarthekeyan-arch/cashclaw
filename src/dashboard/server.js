@@ -7,6 +7,7 @@ import { listMissions, getMissionStats, getMissionTrail } from '../engine/missio
 import { getTotal, getMonthly, getWeekly, getToday, getHistory, getByService, getDailyTotals } from '../engine/earnings-tracker.js';
 import { listInstalledSkills, listAvailableSkills } from '../integrations/openclaw-bridge.js';
 import { listAvailableJobs, getAgentProfile, listOrders, registerAgent, syncStatus, acceptJob, deliverJob, getWallet, acceptProposal, rejectProposal, sendMessage, getMessages, requestWithdraw, claimAgent, getJobDetail } from '../integrations/hyrve-bridge.js';
+import { getTokuProfile, getTokuJobs, getTokuBids, getTokuWallet, getTokuServices, getTokuStatus } from '../integrations/toku-bridge.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -434,6 +435,90 @@ export function createDashboardServer() {
    */
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', version: VERSION, timestamp: new Date().toISOString() });
+  });
+
+  // ─── Toku Agency API Routes ──────────────────────────────────────────
+
+  /**
+   * GET /api/toku
+   * Returns Toku agent status, jobs, bids, and profile.
+   */
+  app.get('/api/toku', async (req, res) => {
+    try {
+      const [status, jobsResult, bidsResult, profileResult, walletResult, servicesResult] = await Promise.allSettled([
+        getTokuStatus(),
+        getTokuJobs(),
+        getTokuBids(),
+        getTokuProfile(),
+        getTokuWallet(),
+        getTokuServices(),
+      ]);
+
+      res.json({
+        status: status.status === 'fulfilled' ? status.value : { registered: false },
+        jobs: jobsResult.status === 'fulfilled' ? jobsResult.value.jobs : [],
+        jobs_total: jobsResult.status === 'fulfilled' ? jobsResult.value.total : 0,
+        bids: bidsResult.status === 'fulfilled' ? bidsResult.value.bids : [],
+        bids_total: bidsResult.status === 'fulfilled' ? bidsResult.value.total : 0,
+        profile: profileResult.status === 'fulfilled' ? profileResult.value.profile : null,
+        wallet: walletResult.status === 'fulfilled' ? walletResult.value.wallet : null,
+        services: servicesResult.status === 'fulfilled' ? servicesResult.value.services : [],
+      });
+    } catch (err) {
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: err.message } });
+    }
+  });
+
+  /**
+   * GET /api/toku/jobs
+   * Get open jobs from Toku.
+   */
+  app.get('/api/toku/jobs', async (req, res) => {
+    try {
+      const result = await getTokuJobs();
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: err.message } });
+    }
+  });
+
+  /**
+   * GET /api/toku/bids
+   * Get agent's bids from Toku.
+   */
+  app.get('/api/toku/bids', async (req, res) => {
+    try {
+      const result = await getTokuBids();
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: err.message } });
+    }
+  });
+
+  /**
+   * GET /api/toku/profile
+   * Get agent profile from Toku.
+   */
+  app.get('/api/toku/profile', async (req, res) => {
+    try {
+      const result = await getTokuProfile();
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: err.message } });
+    }
+  });
+
+  /**
+   * GET /api/toku/wallet
+   * Get agent wallet from Toku.
+   */
+  app.get('/api/toku/wallet', async (req, res) => {
+    try {
+      const result = await getTokuWallet();
+      res.json(result);
+    } catch (err) {
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: err.message } });
+    }
   });
 
   // Fallback: serve index.html for SPA routing
