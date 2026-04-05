@@ -29,6 +29,12 @@ start "Toku SmartBid" cmd /k "node toku-smart-bidder.js"
 REM Start Toku auto-complete worker
 start "Toku Worker" cmd /k "node toku-worker.js"
 
+REM Start Upwork monitor
+start "Upwork Monitor" cmd /k "node upwork-monitor.js"
+
+REM Start Fiverr monitor
+start "Fiverr Monitor" cmd /k "node fiverr-monitor.js"
+
 REM Wait for server to start
 timeout /t 3 /nobreak > nul
 
@@ -41,6 +47,8 @@ echo  - Dashboard: http://localhost:3847
 echo  - HYRVE: Monitoring + Auto-accept
 echo  - Toku: Auto-bidding on jobs
 echo  - Toku: Auto-completing won jobs
+echo  - Upwork: Job monitoring
+echo  - Fiverr: Gig monitoring
 echo  - Windows notifications enabled
 echo.
 echo  Press any key to exit...
