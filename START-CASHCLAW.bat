@@ -23,8 +23,8 @@ start "CashClaw Heartbeat" cmd /k "node hyrve-heartbeat.js"
 REM Start job notifier
 start "CashClaw Notifier" cmd /k "node job-notifier.js"
 
-REM Start Toku Agency auto-bidder
-start "Toku AutoBid" cmd /k "node toku-autobid.js"
+REM Start Toku Agency smart auto-bidder
+start "Toku SmartBid" cmd /k "node toku-smart-bidder.js"
 
 REM Wait for server to start
 timeout /t 3 /nobreak > nul

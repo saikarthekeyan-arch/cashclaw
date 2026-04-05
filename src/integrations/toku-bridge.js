@@ -142,3 +142,13 @@ export async function getTokuStatus() {
     api_url: TOKU_API,
   };
 }
+
+export function getBidHistory() {
+  const BID_HISTORY_PATH = 'C:/Users/pc/.cashclaw/toku-bids.json';
+  try {
+    if (fs.existsSync(BID_HISTORY_PATH)) {
+      return JSON.parse(fs.readFileSync(BID_HISTORY_PATH, 'utf-8'));
+    }
+  } catch (e) {}
+  return { bids: {}, wonJobs: [] };
+}

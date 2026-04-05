@@ -613,7 +613,15 @@ async function loadToku() {
       html += '<div class="toku-stat"><span class="label">Open Jobs:</span> <span class="value">' + (data.jobs_total || 0) + '</span></div>';
       
       // Bids submitted
-      html += '<div class="toku-stat"><span class="label">Your Bids:</span> <span class="value">' + (data.bids_total || 0) + '</span></div>';
+      const bidHistory = data.bid_history || {};
+      const bidCount = Object.keys(bidHistory.bids || {}).length;
+      html += '<div class="toku-stat"><span class="label">Your Bids:</span> <span class="value">' + bidCount + '</span></div>';
+      
+      // Won jobs
+      const wonCount = (bidHistory.wonJobs || []).length;
+      html += '<div class="toku-stat"><span class="label">Won:</span> <span class="value">' + wonCount + '</span></div>';
+      
+      html += '</div>';
       
       // Services
       if (data.services && data.services.length > 0) {
@@ -625,11 +633,25 @@ async function loadToku() {
         html += '</ul></div>';
       }
       
-      html += '</div>';
+      // Show bid history
+      if (bidHistory.bids && Object.keys(bidHistory.bids).length > 0) {
+        html += '<div class="toku-bids"><strong>Your Bids:</strong><ul class="bid-list">';
+        const bids = Object.values(bidHistory.bids);
+        bids.slice(0, 10).forEach(bid => {
+          const amount = bid.amount ? '$' + (bid.amount / 100).toFixed(2) : '-';
+          const statusClass = bid.status === 'pending' ? 'status-pending' : (bid.status === 'won' ? 'status-won' : 'status-other');
+          html += '<li class="bid-item">';
+          html += '<span class="bid-title">' + (bid.title || 'Job').substring(0, 40) + '</span>';
+          html += '<span class="bid-amount">' + amount + '</span>';
+          html += '<span class="bid-status ' + statusClass + '">' + (bid.status || 'unknown') + '</span>';
+          html += '</li>';
+        });
+        html += '</ul></div>';
+      }
       
       // Show recent jobs
       if (data.jobs && data.jobs.length > 0) {
-        html += '<div class="toku-jobs"><strong>Recent Jobs:</strong><ul class="job-list">';
+        html += '<div class="toku-jobs"><strong>Open Jobs:</strong><ul class="job-list">';
         data.jobs.slice(0, 5).forEach(job => {
           const budget = job.budgetCents ? '$' + (job.budgetCents / 100).toFixed(2) : 'Open';
           html += '<li><span class="job-title">' + job.title.substring(0, 50) + '</span> <span class="job-budget">' + budget + '</span> <span class="job-bids">[' + (job.bidCount || 0) + ' bids]</span></li>';

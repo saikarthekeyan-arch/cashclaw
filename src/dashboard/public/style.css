@@ -1070,3 +1070,61 @@ code, pre, .monospace {
   display: flex;
   gap: 8px;
 }
+
+.toku-bids {
+  margin-top: 16px;
+}
+
+.toku-bids ul {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.bid-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.bid-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.bid-title {
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.bid-amount {
+  color: var(--green);
+  font-weight: 600;
+  margin: 0 10px;
+}
+
+.bid-status {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: var(--yellow);
+  color: #000;
+}
+
+.status-won {
+  background: var(--green);
+  color: #fff;
+}
+
+.status-other {
+  background: var(--text-muted);
+  color: #fff;
+}
