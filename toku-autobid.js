@@ -202,6 +202,9 @@ async function checkAndBid() {
         );
         
         await new Promise(r => setTimeout(r, 2000));
+      } else {
+        const failedReason = 'already bid or deadline passed';
+        if (failedReason) bidHistory.add(job.id);
       }
     }
     
