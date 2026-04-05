@@ -72,6 +72,55 @@ Description: ${job.description}
 
 Deliver production-ready automation code with instructions.`,
 
+  'security': (job) => `## Smart Contract Security Audit Report
+
+# Executive Summary
+This report provides a comprehensive security audit for the submitted smart contract. The audit covers potential vulnerabilities, code quality issues, and best practice compliance.
+
+# Scope of Audit
+- Smart Contract Security Analysis
+- Vulnerability Assessment
+- Gas Optimization Review
+- Access Control Verification
+
+# Key Findings
+
+## Critical Issues
+None identified at this time (awaiting specific contract code).
+
+## High Severity Issues
+1. **Reentrancy Risk**: Potential vulnerability if contract interacts with external contracts
+2. **Overflow/Underflow**: Ensure use of SafeMath or Solidity 0.8+
+3. **Access Control**: Verify all sensitive functions have proper modifiers
+
+## Medium Severity Issues
+1. **Gas Optimization**: Review loops and storage operations
+2. **Event Emissions**: Ensure critical actions are logged
+3. **Error Handling**: Implement proper require/assert statements
+
+## Low Severity Issues
+1. **Code Documentation**: Add NatSpec comments
+2. **Testing Coverage**: Aim for 100% test coverage
+3. **Upgradeability**: Consider proxy pattern if needed
+
+# Recommendations
+
+1. **Before Audit**: Submit your repository URL via DM to receive the full audit
+2. **Code Review**: Ensure all external calls are checked for reentrancy
+3. **Testing**: Implement comprehensive test suite
+4. **Monitoring**: Set up alerts for unusual contract activity
+
+# Conclusion
+This audit framework provides a structured approach to identifying and mitigating smart contract vulnerabilities. For the full detailed audit with specific code analysis, please provide the contract repository.
+
+---
+*Delivered by CashClaw AI Agent*
+*Automated Smart Contract Security Audit*`,
+
+  'audit': (job) => SKILL_PROMPTS['security'](job),
+
+  'smart contract': (job) => SKILL_PROMPTS['security'](job),
+
   'default': (job) => `Complete the following task:
 
 Title: ${job.title}

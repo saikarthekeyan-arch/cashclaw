@@ -95,12 +95,21 @@ function saveBidHistory(history) {
   fs.writeFileSync(BID_HISTORY_PATH, JSON.stringify(history, null, 2));
 }
 
-function getBidMessage(job) {
+function getBidMessage(job, bidAmount) {
+  const desc = `${job.title} ${job.description || ''}`.toLowerCase();
+  
+  // For FREE jobs
+  if (bidAmount === 0) {
+    if (desc.includes('security') || desc.includes('audit') || desc.includes('review')) {
+      return `I can perform a comprehensive smart contract security audit. I'll analyze your Solidity/EVM code for vulnerabilities including reentrancy, overflow, access control issues, and provide detailed remediation recommendations. Ready to start immediately upon receiving your repo!`;
+    }
+    return `FREE service as requested. I specialize in this type of work and can deliver quality results. Looking forward to building a good reputation through this opportunity.`;
+  }
+  
   const messages = [
-    `Hi! I'm interested in "${job.title}". I specialize in SEO, content writing, data scraping, and automation. Can deliver quality work.`,
-    `I can help with this task. Experienced in web scraping, automation, and content generation. Ready to start immediately.`,
-    `This looks like a great project! I have skills in ${job.category || 'digital services'} and can deliver on time.`,
-    `I'd be happy to work on this. I offer professional services in SEO, content, and data scraping at competitive rates.`
+    `I can help with this task. Experienced in ${job.category || 'digital services'} and ready to deliver quality work.`,
+    `This looks like a great project! I have relevant skills and can deliver on time at the price offered.`,
+    `I'd be happy to work on this. Professional service at competitive rates.`
   ];
   return messages[Math.floor(Math.random() * messages.length)];
 }
@@ -113,20 +122,27 @@ function calculateWinningBid(job, config) {
   if (budgetCents > 0) {
     const minBid = Math.floor(budgetCents * 0.7);
     const maxAllowed = Math.min(budgetCents - 1, maxBidCents);
-    // Bid slightly lower than max allowed but above minimum
     return Math.max(minBid, Math.floor(maxAllowed * 0.8));
   }
   
-  // For open budget jobs, use default pricing based on category
+  // For FREE jobs (budget = 0), bid $0 to compete
   const desc = `${job.title} ${job.description || ''}`.toLowerCase();
   
+  // Check if it's a "FREE" job posting
+  if (desc.includes('free')) {
+    return 0; // Bid FREE to compete
+  }
+  
+  // For open budget jobs, use default pricing based on category
   if (desc.includes('scraping') || desc.includes('automation')) return Math.min(1500, maxBidCents);
   if (desc.includes('research') || desc.includes('analysis')) return Math.min(1200, maxBidCents);
   if (desc.includes('content') || desc.includes('writing')) return Math.min(800, maxBidCents);
   if (desc.includes('seo')) return Math.min(1500, maxBidCents);
   if (desc.includes('leads') || desc.includes('data')) return Math.min(1000, maxBidCents);
+  if (desc.includes('security') || desc.includes('audit')) return 0; // FREE for audits
   
-  return Math.min(500, maxBidCents); // Minimum viable bid
+  return Math.min(500, maxBidCents);
+}
 }
 
 async function submitBid(apiKey, job, bidAmount, history) {
@@ -136,7 +152,7 @@ async function submitBid(apiKey, job, bidAmount, history) {
       headers: { 'Authorization': `Bearer ${apiKey}` },
       body: {
         priceCents: bidAmount,
-        message: getBidMessage(job)
+        message: getBidMessage(job, bidAmount)
       }
     });
     
