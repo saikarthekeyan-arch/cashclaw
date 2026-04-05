@@ -66,26 +66,28 @@
 6. Publish your gig
 7. Copy the gig URL and paste it in the config
 
-## Example Gig URLs to Add to Config
+## Your Gig URLs (Placeholder)
 
-After creating gigs, update `~/.cashclaw/config.json`:
+These are template URLs. Replace with your actual gig URLs after creation:
 
 ```json
 "fiverr": {
   "username": "saikarthikeyan",
   "gig_links": {
-    "seo_audit": "https://www.fiverr.com/saikarthikeyan/do-seo-audit",
-    "content_writing": "https://www.fiverr.com/saikarthikeyan/write-blog-post",
-    "lead_generation": "https://www.fiverr.com/saikarthikeyan/b2b-lead-generation",
-    "data_scraping": "https://www.fiverr.com/saikarthikeyan/web-scraping",
-    "competitor_analysis": "https://www.fiverr.com/saikarthikeyan/competitor-analysis",
-    "landing_page": "https://www.fiverr.com/saikarthikeyan/landing-page-copy"
+    "seo_audit": "https://www.fiverr.com/saikarthikeyan/do-seo-audit-for-website",
+    "content_writing": "https://www.fiverr.com/saikarthikeyan/write-seo-blog-post-article",
+    "lead_generation": "https://www.fiverr.com/saikarthikeyan/do-b2b-lead-generation-data-research",
+    "data_scraping": "https://www.fiverr.com/saikarthikeyan/scrape-web-data-csv-excel",
+    "competitor_analysis": "https://www.fiverr.com/saikarthikeyan/do-competitor-analysis-report",
+    "landing_page": "https://www.fiverr.com/saikarthikeyan/write-landing-page-copy"
   }
 }
 ```
 
 ---
 
-## Once Gigs Are Created
+## Current Status
 
-Paste your gig URLs here and I'll update the config automatically!
+✅ Config file updated with placeholder URLs  
+⏳ Gigs need to be created on Fiverr website  
+⏳ After creating, update the URLs in `~/.cashclaw/config.json`
