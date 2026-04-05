@@ -975,3 +975,98 @@ code, pre, .monospace {
     scroll-behavior: auto;
   }
 }
+
+/* ─── Toku Agency Styles ────────────────────────────────────────────── */
+
+.toku-panel {
+  background: linear-gradient(135deg, #1E2A45 0%, #2A1E45 100%);
+}
+
+.toku-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.toku-stat {
+  background: var(--bg-secondary);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toku-stat .label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.toku-stat .value {
+  color: var(--green);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.toku-services {
+  margin-top: 16px;
+}
+
+.toku-services ul {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.toku-services li {
+  padding: 6px 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.toku-services li:last-child {
+  border-bottom: none;
+}
+
+.toku-jobs {
+  margin-top: 16px;
+}
+
+.toku-jobs ul {
+  list-style: none;
+  margin-top: 8px;
+}
+
+.toku-jobs li {
+  padding: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toku-jobs .job-title {
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.toku-jobs .job-budget {
+  color: var(--green);
+  font-weight: 600;
+  margin: 0 8px;
+}
+
+.toku-jobs .job-bids {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.toku-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}

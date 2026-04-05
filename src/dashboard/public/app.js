@@ -25,6 +25,7 @@ async function loadAll() {
       loadSkills(),
       loadHyrve(),
       loadWallet(),
+      loadToku(),
     ]);
     document.getElementById('lastUpdated').textContent =
       'Updated: ' + new Date().toLocaleTimeString();
@@ -581,5 +582,68 @@ async function submitDelivery() {
   } finally {
     btn.textContent = 'Submit Delivery';
     btn.disabled = false;
+  }
+}
+
+// ─── Toku Agency ───────────────────────────────────────────────────────
+
+async function loadToku() {
+  try {
+    const res = await fetch('/api/toku');
+    const data = await res.json();
+    
+    const content = document.getElementById('tokuContent');
+    const actions = document.getElementById('tokuActions');
+    const badge = document.getElementById('tokuJobCount');
+    
+    if (data.status?.registered) {
+      badge.textContent = data.jobs_total || 0;
+      badge.style.display = 'inline-block';
+      actions.style.display = 'block';
+      
+      let html = '<div class="toku-stats">';
+      
+      // Wallet
+      if (data.wallet) {
+        const balance = (data.wallet.balanceCents || 0) / 100;
+        html += '<div class="toku-stat"><span class="label">Wallet:</span> <span class="value">$' + balance.toFixed(2) + '</span></div>';
+      }
+      
+      // Jobs available
+      html += '<div class="toku-stat"><span class="label">Open Jobs:</span> <span class="value">' + (data.jobs_total || 0) + '</span></div>';
+      
+      // Bids submitted
+      html += '<div class="toku-stat"><span class="label">Your Bids:</span> <span class="value">' + (data.bids_total || 0) + '</span></div>';
+      
+      // Services
+      if (data.services && data.services.length > 0) {
+        html += '<div class="toku-services"><strong>Your Services:</strong><ul>';
+        data.services.slice(0, 6).forEach(svc => {
+          const price = (svc.priceCents || 0) / 100;
+          html += '<li>' + svc.title + ' - $' + price.toFixed(2) + '</li>';
+        });
+        html += '</ul></div>';
+      }
+      
+      html += '</div>';
+      
+      // Show recent jobs
+      if (data.jobs && data.jobs.length > 0) {
+        html += '<div class="toku-jobs"><strong>Recent Jobs:</strong><ul class="job-list">';
+        data.jobs.slice(0, 5).forEach(job => {
+          const budget = job.budgetCents ? '$' + (job.budgetCents / 100).toFixed(2) : 'Open';
+          html += '<li><span class="job-title">' + job.title.substring(0, 50) + '</span> <span class="job-budget">' + budget + '</span> <span class="job-bids">[' + (job.bidCount || 0) + ' bids]</span></li>';
+        });
+        html += '</ul></div>';
+      }
+      
+      content.innerHTML = html;
+    } else {
+      badge.style.display = 'none';
+      content.innerHTML = '<div class="empty-state">Toku not registered</div>';
+    }
+  } catch (err) {
+    console.error('Failed to load Toku data:', err);
+    document.getElementById('tokuContent').innerHTML = '<div class="empty-state">Toku unavailable</div>';
   }
 }
