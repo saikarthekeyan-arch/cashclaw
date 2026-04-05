@@ -23,6 +23,9 @@ start "CashClaw Heartbeat" cmd /k "node hyrve-heartbeat.js"
 REM Start job notifier
 start "CashClaw Notifier" cmd /k "node job-notifier.js"
 
+REM Start Toku Agency monitor
+start "Toku Monitor" cmd /k "node toku-monitor.js"
+
 REM Wait for server to start
 timeout /t 3 /nobreak > nul
 
@@ -32,7 +35,9 @@ start http://localhost:3847
 echo.
 echo  All services running!
 echo  - Dashboard: http://localhost:3847
-echo  - You will get Windows notifications on new jobs
+echo  - HYRVE: Monitoring for jobs
+echo  - Toku: Monitoring for jobs
+echo  - Windows notifications on new jobs
 echo.
 echo  Press any key to exit...
 pause > nul
